@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Prepare') {
+            steps {
+                script {
+                    releasedVersion = getReleasedVersion()
+                    println(releasedVersion)
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                withMaven(maven: 'maven3.0.4') {
+                    script {
+                        println("Building the docker image & Artifact...")
+                        if (isUnix()) {
+                            sh "mvn clean install"
+                        } else {
+                            bat "mvn clean install"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+def releasedVersion
+
+def getReleasedVersion() {
+    return (readFile('pom.xml') =~ '<version>(.+)-SNAPSHOT</version>')[0][1]
+}
