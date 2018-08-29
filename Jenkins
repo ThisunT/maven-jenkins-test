@@ -13,7 +13,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                withMaven(maven: 'maven3.0.4') {
+                withMaven(maven: 'maven') {
                     script {
                         println("Building the docker image & Artifact...")
                         if (isUnix()) {
